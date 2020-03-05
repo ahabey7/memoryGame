@@ -1,8 +1,9 @@
 //Create array of cards
 var lastRow = document.querySelectorAll(".row")[4];
 var lastColumn= lastRow.querySelectorAll(".col-3")[3];
+var secondlastColumn = lastRow.querySelectorAll(".col-3")[2]
 $pointsbox= document.querySelector("input");
-
+$accuracyBox= document.querySelector("#accuracy");
 
 
 class Game{
@@ -11,6 +12,7 @@ class Game{
     this.matches=0;
     this.cardsClicked=[];
     this.points=0;
+    this.clicks=0
     }
 
 
@@ -103,7 +105,7 @@ clearImages(points){
 document.querySelectorAll('.card').forEach(card => {
         card.onclick = function() {
           // TODO: write some code 
-          
+          game.clicks++;
           //check if cards are not already open
           if(game.cardsClicked.length<2 &&  (this.querySelector('img').style.zIndex!=1))  {
           this.querySelector('img').style.zIndex =1;
@@ -111,21 +113,32 @@ document.querySelectorAll('.card').forEach(card => {
           }
 
           setTimeout(function(){  
+                    var accuracy;
                     if(game.cardsClicked.length===2){
                         var pointsbox= lastColumn.querySelectorAll(".points")[0];
                         //two image
                         var image1= game.cardsClicked[0].querySelector('img');
                         var image2 = game.cardsClicked[1].querySelector('img');
+                        
+
                         var isaMatch= game.isaMatch(image1, image2);
+                        game.clicks = game.clicks+2;
+                        var tries=game.clicks/2;
+                        accuracy=Math.floor(((game.matches)/tries)*100);
+             
+                        $accuracyBox.value= accuracy + "%";
+                        console.log(accuracy);
+
                         if(isaMatch){
                             game.cardsClicked=[];
                             console.log("is a match");
                             pointsbox.value=game.matches;
                             var audio = new Audio('images/positive tone.mp3');
                             audio.play();
-                            if (game.matches==8){
+                                if (game.matches==8){
                                 alert("You have won!");
-                            }
+                                }
+                                
                           
                             
                         }else{
@@ -135,7 +148,7 @@ document.querySelectorAll('.card').forEach(card => {
                             //empty the array
                             game.cardsClicked=[];
                         }
-
+                        
                     }
           }, 2000)
           
